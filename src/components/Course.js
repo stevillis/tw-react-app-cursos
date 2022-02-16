@@ -2,7 +2,18 @@ import React, { Component } from 'react';
 
 class Course extends Component {
     static defaultProps = {
-        course: {}
+        course: {},
+        onRemove: () => { }
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.remove = this.remove.bind(this);
+    }
+
+    remove() {
+        this.props.onRemove(this.props.course.id);
     }
 
     render() {
@@ -10,9 +21,9 @@ class Course extends Component {
             { course } = props;
 
         return (
-            <li className='course'>
+            <li className='course' id={course.id}>
                 <div>{course.category}</div>
-                <button>X</button>
+                <button onClick={this.remove}>X</button>
                 <img src={course.image} />
                 <div>{course.name}</div>
             </li>
