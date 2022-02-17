@@ -2,23 +2,30 @@ import React, { Component } from 'react';
 import './App.css';
 
 import Course from './components/Course';
+import NewCourseForm from './components/NewCourseForm';
 
 class App extends Component {
+  static defaultProps = {
+    onSubmit: () => { }
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
-      courses: [
-        {
-          id: 1,
-          category: "Web Framework",
-          name: "Django",
-          image: "https://www.djangoproject.com/m/img/logos/django-logo-negative.png"
-        },
-      ]
+      courses: []
     };
 
+    this.add = this.add.bind(this);
     this.remove = this.remove.bind(this);
+  }
+
+  add(course) {
+    const { courses } = this.state,
+      newCourse = Object.assign({}, course, { id: (Date.now()) });
+
+    courses.push(newCourse);
+    this.setState({ courses });
   }
 
   remove(courseId) {
@@ -33,6 +40,7 @@ class App extends Component {
     const { state } = this;
     return (
       <div className='App'>
+        <NewCourseForm onSubmit={this.add} />
         <ul className='courses-list'>
           {
             state.courses.map(course => <Course course={course} onRemove={this.remove} />)
