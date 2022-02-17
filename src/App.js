@@ -2,22 +2,18 @@ import React, { Component } from 'react';
 import './App.css';
 
 import { CourseService } from './services/CourseService';
+import { CategoryService } from './services/CategoryService';
 
 import Course from './components/Course';
 import NewCourseForm from './components/NewCourseForm';
 
 class App extends Component {
-  static defaultProps = {
-    onSubmit: () => { }
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
-      courses: [
-
-      ]
+      courses: [],
+      categories: []
     };
 
     this.add = this.add.bind(this);
@@ -28,8 +24,14 @@ class App extends Component {
   }
 
   async startData() {
-    const courses = await CourseService.list();
-    this.setState({ courses });
+    //const courses = await CourseService.list();
+    //const categories = await CategoryService.list();
+
+    const [courses, categories] = await Promise.all([
+      CourseService.list(),
+      CategoryService.list()
+    ]);
+    this.setState({ courses, categories });
   }
 
   async add(course) {
@@ -54,7 +56,7 @@ class App extends Component {
     const { state } = this;
     return (
       <div className='App'>
-        <NewCourseForm onSubmit={this.add} />
+        <NewCourseForm onSubmit={this.add} categories={state.categories} />
         <ul className='courses-list'>
           {
             state.courses.map(course => <Course course={course} onRemove={this.remove} />)
